@@ -739,6 +739,7 @@ public class ControlarImagem {
 		codigo.add(dicionario.indexOf(I) );								//coloque a palavra código correspondente a I na sequência codificada;
 		
 		salvarArquivo(nomeArquivo, codigo, nLargura, nAltura);
+		salvarDicionario(nomeArquivo, dicionario);
 				
 		//Imprime tamanho da saida codificada
 		System.out.println("Qtd de dicionario: " + dicionario.size() );
@@ -804,10 +805,10 @@ public class ControlarImagem {
 	}
 	
 	//*******************************************************************************************
-	/*
-	private void salvarArquivo(String nomeArquivo, ArrayList<String> saida){
+	
+	private void salvarDicionario(String nomeArquivo, ArrayList<String> saida){
 		try {
-			FileWriter  arquivo = new FileWriter(nomeArquivo + ".lzw");
+			FileWriter  arquivo = new FileWriter(nomeArquivo + ".dic");
 			PrintWriter  gravarArquivo = new PrintWriter(arquivo);
 			
 			
@@ -826,7 +827,7 @@ public class ControlarImagem {
 		}
 		
 	}	
-	*/
+	
 	//*******************************************************************************************
 	
 	public BufferedImage descompressaoLZW(String nomeArquivo){
@@ -863,7 +864,7 @@ public class ControlarImagem {
 				//System.out.println("Não");
 				p = dicionario.get(pw);
 				c = dicionario.get(pw);
-				dicionario.add(p.concat(c) );
+				dicionario.add(concatena(p, c) ); //ERRO
 				saida.add(p.concat(c) );
 				//System.out.println("Não Dicionario " +  dicionario.size() + " : "  + dicionario.get(dicionario.size() - 1));
 			}
@@ -871,6 +872,8 @@ public class ControlarImagem {
 		
 		System.out.println("Tam codigo: " + saida.size());
 		System.out.println("Tam dicionario: " + dicionario.size());
+		
+		salvarDicionario(nomeArquivo, dicionario);
 		
 		return transformarArray(saida, dimensao[1], dimensao[0]);
 				
@@ -881,6 +884,13 @@ public class ControlarImagem {
 	private String primeiroCaracter(ArrayList<String> dicionario, int cw){
 		String strings[] = dicionario.get(cw).split(";");
 		 return strings[0] + ";";
+	}
+	
+	//*******************************************************************************************
+	
+	private String concatena(String p, String c){
+		String strings[] = c.split(";");
+		return p + strings[0] + ";";
 	}
 	
 	//*******************************************************************************************
