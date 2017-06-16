@@ -15,7 +15,7 @@ public class MontarPainelInicial  {
 	private JPanel   controlePanelAcao1;
 	private JPanel   controlePanelAcao2;
 	private JPanel   controlePanelAcao3;
-	private JPanel   controlePanelVisualImagens;
+	private JPanel   controlePanelAcao5;
 	private JPanel   controlePanelAcao4;
 
 	private JButton  btAcao3;
@@ -39,8 +39,9 @@ public class MontarPainelInicial  {
 	private JTextField txt21;
 	private JTextField txt22;
 
-	private JRadioButton  btVisualNewImg;
-	private JRadioButton  btVisualAllImg;
+	private JRadioButton  btAcao51;
+	private JRadioButton  btAcao52;
+	private JRadioButton  btAcao53;
 	private ButtonGroup   btRdVisualImg;
 
 	private JLabel lbAcao41;
@@ -59,7 +60,7 @@ public class MontarPainelInicial  {
 		JPanel  acao3Panel;
 		JPanel  acao1Panel;
 		JPanel  acao2Panel;
-		JPanel  visualImagensPanel;
+		JPanel  acao5Panel;
 		JPanel  acao4Panel;
 
 		// LAYOUT
@@ -192,15 +193,54 @@ public class MontarPainelInicial  {
 
 		controlePanelAcao2.add(acao2Panel);
 		controlePanelAcao2.setVisible(false);
+		
+		// ADDING RADIO BUTTON PARA CONTROLE DO TIPO DA ACAO 5
+		controlePanelAcao5 = new JPanel();
+		controlePanelAcao5.setBackground( Color.lightGray );
+		controlePanelAcao5.setMaximumSize( new Dimension ( 130, 80 ) );
+		outputPanelEsq.add( controlePanelAcao5 );
+
+		btAcao51 = new JRadioButton ( "Vermelho", true );
+		btAcao52 = new JRadioButton ( "Verde", false );
+		btAcao53 = new JRadioButton ( "Azul", false );
+
+		btRdVisualImg = new ButtonGroup();
+		btRdVisualImg.add(btAcao51);
+		btRdVisualImg.add(btAcao52);
+		btRdVisualImg.add(btAcao53);
+
+		btAcao51.addActionListener(controlePrograma);
+		btAcao52.addActionListener(controlePrograma);
+		btAcao53.addActionListener(controlePrograma);
+		
+		btAcao51.setActionCommand("Acao51");
+		btAcao52.setActionCommand("Acao52");
+		btAcao53.setActionCommand("Acao53");
+
+		acao5Panel = new JPanel();
+		acao5Panel.setPreferredSize( new Dimension ( 120, 70 ) );
+		acao5Panel.setLayout(new GridLayout(3, 1));
+
+		acao5Panel.add( btAcao51 );
+		acao5Panel.add( btAcao52 );
+		acao5Panel.add( btAcao53 );
+
+		acao5Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Cor da borda"));
+
+		controlePanelAcao5.add(acao5Panel);
+		controlePanelAcao5.setVisible(false);
+
+		outputPanelDir.addMouseListener(controlePrograma);
+		outputPanelDir.addMouseListener(controlePrograma);
 
 		// ADDING RADIO BUTTON PARA CONTROLE DO TIPO DA ACAO 4
 		controlePanelAcao4 = new JPanel();
 		controlePanelAcao4.setBackground( Color.lightGray );
-		controlePanelAcao4.setMaximumSize( new Dimension ( 145, 80 ) );
+		controlePanelAcao4.setMaximumSize( new Dimension ( 130, 100 ) );
 		outputPanelEsq.add( controlePanelAcao4 );
 
 		acao4Panel = new JPanel();
-		acao4Panel.setPreferredSize( new Dimension ( 135, 75 ) );
+		acao4Panel.setPreferredSize( new Dimension ( 120, 90 ) );
 		acao4Panel.setLayout(new GridLayout(4, 1));
 		
 		lbAcao41 = new JLabel();
@@ -217,37 +257,6 @@ public class MontarPainelInicial  {
 
 		controlePanelAcao4.add(acao4Panel);
 		controlePanelAcao4.setVisible(false);
-
-		// ADDING RADIO BUTTON PARA CONTROLE DA VISUALIZACAO DAS IMAGENS
-		controlePanelVisualImagens = new JPanel();
-		controlePanelVisualImagens.setBackground( Color.lightGray );
-		controlePanelVisualImagens.setMaximumSize( new Dimension ( 130, 65 ) );
-		outputPanelEsq.add( controlePanelVisualImagens );
-
-		btVisualNewImg = new JRadioButton ( " new image", true );
-		btVisualAllImg = new JRadioButton ( "transitions", false );
-
-		btRdVisualImg = new ButtonGroup();
-		btRdVisualImg.add(btVisualNewImg);
-		btRdVisualImg.add(btVisualAllImg);
-
-		btVisualNewImg.addActionListener(controlePrograma);
-		btVisualAllImg.addActionListener(controlePrograma);
-
-		visualImagensPanel = new JPanel();
-		visualImagensPanel.setPreferredSize( new Dimension ( 120, 55 ) );
-		visualImagensPanel.setLayout(new GridLayout(2, 1));
-
-		visualImagensPanel.add( btVisualNewImg );
-		visualImagensPanel.add( btVisualAllImg );
-
-		visualImagensPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Image Control"));
-
-		controlePanelVisualImagens.add(visualImagensPanel);
-		controlePanelVisualImagens.setVisible(false);
-		
-		outputPanelDir.addMouseListener(controlePrograma);
-		outputPanelDir.addMouseListener(controlePrograma);
 
 		// VISIBLE PANELS
 		outputPanel.add( outputPanelEsq, BorderLayout.LINE_START );
@@ -341,7 +350,7 @@ public class MontarPainelInicial  {
 		controlePanelAcao3.setVisible(true);
 		controlePanelAcao1.setVisible(true);
 		controlePanelAcao2.setVisible(true);
-		controlePanelVisualImagens.setVisible(true);
+		controlePanelAcao5.setVisible(true);
 		controlePanelAcao4.setVisible(true);
 	}
 
@@ -432,24 +441,6 @@ public class MontarPainelInicial  {
 	public Graphics getDesenhoD()
 	{
 		return ( desenhoDir );
-	}
-
-	//******************************************************************************************
-	public int getTipoVisualImage() 
-	{
-		int tipo;
-
-		tipo = 1;
-		if ( btVisualAllImg.isSelected() ) tipo = 2;
-
-		return ( tipo );
-	}
-
-	//******************************************************************************************
-	public void resetaSistema()
-	{
-		btAcao31.setSelected(true);
-		btVisualNewImg.setSelected(true);
 	}
 
 	//******************************************************************************************

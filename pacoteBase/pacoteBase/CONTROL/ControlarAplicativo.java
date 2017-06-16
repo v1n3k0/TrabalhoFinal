@@ -21,6 +21,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	private int                 nLinImageAtual, nColImageAtual;
 	private int                 nLinImageInic, nColImageInic;
 	private int					nDimensaoFiltro;
+	private int					corBorda;
 	private boolean             estadoDesenho;
 
 	//*******************************************************************************************
@@ -30,6 +31,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		pnCenario.showPanel();
 		estadoDesenho  = false;
 		nDimensaoFiltro = 3;
+		corBorda = 0;
 	}
 
 	//*******************************************************************************************
@@ -89,16 +91,28 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			ruidoSalPimenta();
 		}
 
-		if ( comando.equals( "botaoAcao31" ) ) {
+		if ( comando.equals( "Acao31" ) ) {
 			nDimensaoFiltro = 3;
 		}
 
-		if ( comando.equals( "botaoAcao32" ) ) {
+		if ( comando.equals( "Acao32" ) ) {
 			nDimensaoFiltro = 5;
 		}
 
-		if ( comando.equals( "botaoAcao33" ) ) {
+		if ( comando.equals( "Acao33" ) ) {
 			nDimensaoFiltro = 7;
+		}
+		
+		if ( comando.equals( "Acao51" ) ) {
+			corBorda = 0;
+		}
+		
+		if ( comando.equals( "Acao52" ) ) {
+			corBorda = 1;
+		}
+		
+		if ( comando.equals( "Acao53" ) ) {
+			corBorda = 2;
 		}
 		
 		if ( comando.equals( "salvarlzw" ) ) {
@@ -126,7 +140,6 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
 
 			pnCenario.ativarPainelAcao1();
-			pnCenario.resetaSistema();
 		}
 	}
 
@@ -233,7 +246,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		BufferedImage imgAux = controleImagem.getImagem();
 		try {
 			controleImagem.filtroCanny(imagem, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
-			controleImagem.mesclarImagem(imgAux, imagem, 0);
+			controleImagem.mesclarImagem(imgAux, imagem, corBorda);
 			pnCenario.limpaPainelDir( desenhoDir );
 			controleImagem.mostrarImagemBuffer(imgAux, desenhoDir);
 			imagem = imgAux;

@@ -735,7 +735,7 @@ public class ControlarImagem {
 	}
 
 	//*******************************************************************************************
-	
+	//Faz união da imagem original com imagem das bordas
 	public void mesclarImagem(BufferedImage original, BufferedImage imgborda, int cor){
 		int x, y;
 		int nl = original.getHeight();
@@ -764,7 +764,7 @@ public class ControlarImagem {
 	}
 	
 	//*******************************************************************************************
-
+	//Compressão de imagem
 	public void compressaoLZW(String nomeArquivo, BufferedImage imagem){
 		int x, y, nLargura, nAltura;
 		ArrayList<String> dicionario = new ArrayList<String>();
@@ -776,30 +776,32 @@ public class ControlarImagem {
 				I = "";		
 
 		//iniciar o dicionario
-		iniciarDicionario(dicionario); 										//No início o dicionário contém todas as raízes possíveis e I é vazio;
-
+		iniciarDicionario(dicionario);
+				
+		//Codificação da imagem
 		for(y = 0; y < nAltura; y++){
 			for(x = 0; x < nLargura; x++){
-				c = getCores(imagemWR, x, y);									//c <= próximo caractere da sequência de entrada;
+				c = getCores(imagemWR, x, y);
 
-				if(dicionario.indexOf(I.concat(c) ) != -1){					//A string I+c existe no dicionário? dicionario.indexOf(I.concat(c) ) != -1
-					I = I.concat(c); 										//I <= I+c;
+				if(dicionario.indexOf(I.concat(c) ) != -1){
+					I = I.concat(c);
 				}else{
-					codigo.add(dicionario.indexOf(I) );						//coloque a palavra código correspondente a I na sequência codificada;
-					dicionario.add(I.concat(c) );							//adicione a string I+c ao dicionário;
-					I = c;													//I <= c;
+					codigo.add(dicionario.indexOf(I) );
+					dicionario.add(I.concat(c) );
+					I = c;
 				}
 
 			}
 		}
-		codigo.add(dicionario.indexOf(I) );								//coloque a palavra código correspondente a I na sequência codificada;
-
+		codigo.add(dicionario.indexOf(I) );
+		
+		//Salva a codigo da imagem
 		salvarArquivo(nomeArquivo, codigo, nLargura, nAltura);
 
 	}
 
 	//*******************************************************************************************
-
+	//Calcula media das cores do pixel
 	private String getCores(WritableRaster imagemWR, int x, int y){
 		int r, g, b;
 
@@ -819,7 +821,7 @@ public class ControlarImagem {
 	}
 
 	//*******************************************************************************************
-
+	//Inicia o dicionario com todos os possiveis valores primario
 	private void iniciarDicionario(ArrayList<String> dicionario){
 		for (int i = 0; i < 256; i++) {
 			dicionario.add(Integer.toString(i) + ";" ); //Separador ";"
@@ -827,17 +829,18 @@ public class ControlarImagem {
 	}
 
 	//*******************************************************************************************
-
+	//Salva o arquivo codificado
 	private void salvarArquivo(String nomeArquivo, ArrayList<Integer> saida, int nLargura, int nAltura){
 		try {
 			File arquivo = new File(nomeArquivo + ".lzw");
 			FileOutputStream gravarArquivo = new FileOutputStream(arquivo);
 			DataOutputStream  oos = new DataOutputStream (gravarArquivo);
-
+			
+			//Escreve a dimensao da imagem
 			oos.writeInt(nLargura);
 			oos.writeInt(nAltura);
 
-			//Codificação da imagem
+			//escreve codigo da imagem
 			for (int i = 0; i < saida.size(); i++) {
 				oos.writeInt(saida.get(i) );
 			}			
@@ -847,14 +850,13 @@ public class ControlarImagem {
 			gravarArquivo.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	//*******************************************************************************************
-
+	//Metodo para descompressão da imagem
 	public BufferedImage descompressaoLZW(String nomeArquivo){
 		ArrayList<String> dicionario = new ArrayList<String>();
 		ArrayList<String> saida = new ArrayList<String>();
@@ -868,10 +870,11 @@ public class ControlarImagem {
 
 		//Abrir o arquivo
 		abrirArquivo(nomeArquivo, codigo, dimensao);
-
+		
+		//Descodifica a imagem
 		cw = codigo.get(0);
 		saida.add(dicionario.get(cw) );
-
+				
 		for(i = 1; i < codigo.size(); i++){
 			pw = cw;
 			cw = codigo.get(i);
@@ -888,36 +891,41 @@ public class ControlarImagem {
 				saida.add(concatena(p, c) );
 			}
 		}
-
+		
+		//Retorna imagem codifica
 		return transformarArray(saida, dimensao[1], dimensao[0]);
 
 	}
 
 	//*******************************************************************************************
-
+	//Pega o 1º valor da String
 	private String primeiroCaracter(ArrayList<String> dicionario, int cw){
 		String strings[] = dicionario.get(cw).split(";");
 		return strings[0] + ";";
 	}
 
 	//*******************************************************************************************
-
+	//Concatena p com 1º valor de c
 	private String concatena(String p, String c){
 		String strings[] = c.split(";");
 		return p + strings[0] + ";";
 	}
 
 	//*******************************************************************************************
-
+	
+	
+	//Faz a leitura do arquivo codificado
 	private void abrirArquivo(String nomeArquivo, ArrayList<Integer> codigo, Integer[] dimensao){
 		try{
 			File arquivo = new File(nomeArquivo);
 			FileInputStream lerArquivo = new FileInputStream(arquivo);
 			DataInputStream dis = new DataInputStream(lerArquivo);
-
+			
+			//Dimensão da imagem
 			dimensao[0] = dis.readInt();
 			dimensao[1] = dis.readInt();
-
+			
+			//Leiturada imagem codificada
 			while( dis.available() > 0 ){
 				codigo.add( dis.readInt() );
 			}
@@ -933,7 +941,7 @@ public class ControlarImagem {
 	}
 
 	//*******************************************************************************************
-
+	
 	public BufferedImage transformarArray ( ArrayList<String> saida, int nLin, int nCol){
 		int x = 0, y = 0, i, j;
 		WritableRaster imagemRasterSaida;
