@@ -720,7 +720,6 @@ public class ControlarImagem {
 		
 		//iniciar o dicionario
 		iniciarDicionario(dicionario); 										//No início o dicionário contém todas as raízes possíveis e I é vazio;
-		System.out.println("Tam. inicial dicionario: " + dicionario.size());
 		
 		for(y = 0; y < nAltura; y++){
 			for(x = 0; x < nLargura; x++){
@@ -739,14 +738,7 @@ public class ControlarImagem {
 		codigo.add(dicionario.indexOf(I) );								//coloque a palavra código correspondente a I na sequência codificada;
 		
 		salvarArquivo(nomeArquivo, codigo, nLargura, nAltura);
-		salvarDicionario(nomeArquivo, dicionario);
 				
-		//Imprime tamanho da saida codificada
-		System.out.println("Qtd de dicionario: " + dicionario.size() );
-				
-		//Imprime tamanho da saida codificada
-		System.out.println("Qtd de saida: " + codigo.size() );
-		
 	}
 	
 	//*******************************************************************************************
@@ -805,7 +797,7 @@ public class ControlarImagem {
 	}
 	
 	//*******************************************************************************************
-	
+	/*
 	private void salvarDicionario(String nomeArquivo, ArrayList<String> saida){
 		try {
 			FileWriter  arquivo = new FileWriter(nomeArquivo + ".dic");
@@ -827,7 +819,7 @@ public class ControlarImagem {
 		}
 		
 	}	
-	
+	*/
 	//*******************************************************************************************
 	
 	public BufferedImage descompressaoLZW(String nomeArquivo){
@@ -850,31 +842,20 @@ public class ControlarImagem {
 		for(i = 1; i < codigo.size(); i++){
 			pw = cw;
 			cw = codigo.get(i);
-			
-			//System.out.println("cont: " + i + " pw: " + pw +" cw: " + cw + " size: " + dicionario.size() + " valor: " + dicionario.get(dicionario.size() - 1) );
-			
+						
 			if(dicionario.size() > cw){
-				//System.out.println("Sim");
 				saida.add(dicionario.get(cw) );
 				p = dicionario.get(pw);
 				c = primeiroCaracter(dicionario, cw);
 				dicionario.add(p.concat(c) );
-				//System.out.println("Sim Dicionario " +  dicionario.size() + " : "  + dicionario.get(dicionario.size() - 1));
 			}else{
-				//System.out.println("Não");
 				p = dicionario.get(pw);
 				c = dicionario.get(pw);
-				dicionario.add(concatena(p, c) ); //ERRO
-				saida.add(p.concat(c) );
-				//System.out.println("Não Dicionario " +  dicionario.size() + " : "  + dicionario.get(dicionario.size() - 1));
+				dicionario.add(concatena(p, c) );
+				saida.add(concatena(p, c) );
 			}
 		}
-		
-		System.out.println("Tam codigo: " + saida.size());
-		System.out.println("Tam dicionario: " + dicionario.size());
-		
-		salvarDicionario(nomeArquivo, dicionario);
-		
+				
 		return transformarArray(saida, dimensao[1], dimensao[0]);
 				
 	}
@@ -904,8 +885,6 @@ public class ControlarImagem {
 			dimensao[0] = dis.readInt();
 			dimensao[1] = dis.readInt();
 			
-			//System.out.println("x: " + x + " y: " + y);
-			
 			while( dis.available() > 0 ){
 				codigo.add( dis.readInt() );
 			}
@@ -932,26 +911,21 @@ public class ControlarImagem {
 
 		for ( i = 0; i < saida.size(); i++ ){
 			String cores[] = saida.get(i).split(";");
-			//System.out.println(saida.get(i) );
 			
 			for (j = 0; j < cores.length; j++) {
 				if(!cores[j].equals("")){
-
-					if(x == nCol){ //&& y <= nLin
+										
+					imagemRasterSaida.setSample( x, y, 0, Integer.parseInt(cores[j]) );
+					
+					x++;
+					if(x == nCol){
 						x = 0;
 						y++;
 					}
-						
-					//System.out.println("x: " + x + " y: " + y + " cor: " + cores[j]);
-					
-					if(x < nCol && y < nLin) imagemRasterSaida.setSample( x, y, 0, Integer.parseInt(cores[j]) ); // Integer.parseInt(cores[j]
-					
-					x++;
 					
 				}
 			}
 		}
-
 		return ( imagemB );
 	}
 	
