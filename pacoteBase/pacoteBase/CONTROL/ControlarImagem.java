@@ -231,20 +231,35 @@ public class ControlarImagem {
 	public void setImagem(BufferedImage img){
 		imagemDada = img;
 	}
+	
+	//*******************************************************************************************
+	
+	public BufferedImage copia(BufferedImage original){
+		ColorModel model = original.getColorModel();
+		WritableRaster raster = original.copyData(null);
+		BufferedImage alterada = new BufferedImage(model, raster, model.isAlphaPremultiplied(), null);
+		
+		return alterada;
+	}
 
 	//*******************************************************************************************
 	
-	public int getCor(BufferedImage img, int x, int y){
-		int cor = 0;
-		int width = img.getWidth();
-		int height = img.getHeight();
+	public ArrayList<Integer> gerCores(BufferedImage imagem, int x, int y){
+		ArrayList<Integer> cores = new ArrayList<Integer>();
 		
-		WritableRaster imgWR = img.getRaster();
+		WritableRaster imagemlWR = imagem.getRaster();
+		cores.add(imagemlWR.getSample(x, y, 0) );
+
+		try {
+			cores.add(imagemlWR.getSample(x, y, 1) );
+			cores.add(imagemlWR.getSample(x, y, 2) );
+
+		} catch (Exception e) {
+			cores.add(imagemlWR.getSample(x, y, 0) );
+			cores.add(imagemlWR.getSample(x, y, 0) );
+		}
 		
-		if(x <= width && y <= height)
-			cor = imgWR.getSample(x, y, 0);
-		
-		return cor;
+		return cores;
 	}
 	
 	//*******************************************************************************************
@@ -267,7 +282,7 @@ public class ControlarImagem {
 		int i, j, cor, nLargura, nAltura;
 		nLargura = original.getWidth();
 		nAltura = original.getHeight();
-		BufferedImage alterada = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_3BYTE_BGR );
+		BufferedImage alterada = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_BYTE_GRAY );
 		WritableRaster alteradaWR = alterada.getRaster();
 
 		//Percorre todos os pixel da imagem
@@ -275,12 +290,6 @@ public class ControlarImagem {
 			for(j = 0; j < nAltura; j++){
 				cor = vizinhoMediana(original, i, j, tam);
 				alteradaWR.setSample(i, j, 0, cor);
-				try {
-					alteradaWR.setSample(i, j, 1, cor);
-					alteradaWR.setSample(i, j, 2, cor);
-				} catch (Exception e) {
-
-				}
 			}
 		}
 		return alterada;
@@ -308,7 +317,7 @@ public class ControlarImagem {
 		for(i = xi; i <= xf; i++){
 			for(j = yi; j <= yf; j++){
 				if( i >= 0 && i < nLargura && j >= 0 && j < nAltura ){
-					cores.add(originalWR.getSample(i, j, 0) );
+					cores.add(getCor(originalWR, i, y) );
 				}
 			}
 		}
@@ -318,6 +327,25 @@ public class ControlarImagem {
 
 		//Cor da mediana
 		return cores.get( (cores.size() / 2) + 1 );
+	}
+
+	//*************************************************************************************
+
+	private int getCor(WritableRaster imagemWR, int x, int y){
+		int r, g, b;
+
+		r = imagemWR.getSample(x, y, 0);
+
+		try {
+			g = imagemWR.getSample(x, y, 1);
+			b = imagemWR.getSample(x, y, 2);
+
+		} catch (Exception e) {
+			g = r;
+			b = r;
+		}
+
+		return (r + g + b) / 3;
 	}
 
 	//*************************************************************************************
@@ -708,6 +736,35 @@ public class ControlarImagem {
 
 	//*******************************************************************************************
 	
+	public void mesclarImagem(BufferedImage original, BufferedImage imgborda, int cor){
+		int x, y;
+		int nl = original.getHeight();
+		int nc = original.getWidth();
+		
+		WritableRaster originalWR = original.getRaster();
+		WritableRaster imgBordaWR = imgborda.getRaster();
+				
+		for(y = 0; y < nl; y++){
+			for (x = 0; x < nc; x++) {
+				if(imgBordaWR.getSample(x, y, 0) == 0 ){
+					
+					try {
+						originalWR.setSample(x, y, 0, 0);
+						originalWR.setSample(x, y, 1, 0);
+						originalWR.setSample(x, y, 2, 0);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					originalWR.setSample(x, y, cor, 255);
+				}
+			}
+		}
+		
+	}
+	
+	//*******************************************************************************************
+
 	public void compressaoLZW(String nomeArquivo, BufferedImage imagem){
 		int x, y, nLargura, nAltura;
 		ArrayList<String> dicionario = new ArrayList<String>();
@@ -717,14 +774,14 @@ public class ControlarImagem {
 		WritableRaster imagemWR = imagem.getRaster();
 		String 	c = "",
 				I = "";		
-		
+
 		//iniciar o dicionario
 		iniciarDicionario(dicionario); 										//No início o dicionário contém todas as raízes possíveis e I é vazio;
-		
+
 		for(y = 0; y < nAltura; y++){
 			for(x = 0; x < nLargura; x++){
-				c = getCor(imagemWR, x, y);									//c <= próximo caractere da sequência de entrada;
-				
+				c = getCores(imagemWR, x, y);									//c <= próximo caractere da sequência de entrada;
+
 				if(dicionario.indexOf(I.concat(c) ) != -1){					//A string I+c existe no dicionário? dicionario.indexOf(I.concat(c) ) != -1
 					I = I.concat(c); 										//I <= I+c;
 				}else{
@@ -732,96 +789,72 @@ public class ControlarImagem {
 					dicionario.add(I.concat(c) );							//adicione a string I+c ao dicionário;
 					I = c;													//I <= c;
 				}
-				
+
 			}
 		}
 		codigo.add(dicionario.indexOf(I) );								//coloque a palavra código correspondente a I na sequência codificada;
-		
+
 		salvarArquivo(nomeArquivo, codigo, nLargura, nAltura);
-				
+
 	}
-	
+
 	//*******************************************************************************************
-	
-	private String getCor(WritableRaster imagemWR, int x, int y){
+
+	private String getCores(WritableRaster imagemWR, int x, int y){
 		int r, g, b;
-		
+
 		r = imagemWR.getSample(x, y, 0);
-		
+
 		try {
 			g = imagemWR.getSample(x, y, 1);
 			b = imagemWR.getSample(x, y, 2);
-			
+
 		} catch (Exception e) {
 			g = r;
 			b = r;
 		}
-		
+
 		return Integer.toString( (r + g + b) / 3) + ";";
-		
+
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	private void iniciarDicionario(ArrayList<String> dicionario){
 		for (int i = 0; i < 256; i++) {
 			dicionario.add(Integer.toString(i) + ";" ); //Separador ";"
 		}
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	private void salvarArquivo(String nomeArquivo, ArrayList<Integer> saida, int nLargura, int nAltura){
 		try {
 			File arquivo = new File(nomeArquivo + ".lzw");
 			FileOutputStream gravarArquivo = new FileOutputStream(arquivo);
 			DataOutputStream  oos = new DataOutputStream (gravarArquivo);
-			
+
 			oos.writeInt(nLargura);
 			oos.writeInt(nAltura);
-			
+
 			//Codificação da imagem
 			for (int i = 0; i < saida.size(); i++) {
 				oos.writeInt(saida.get(i) );
 			}			
-			
+
 			oos.flush();
 			oos.close();
 			gravarArquivo.close();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	//*******************************************************************************************
-	/*
-	private void salvarDicionario(String nomeArquivo, ArrayList<String> saida){
-		try {
-			FileWriter  arquivo = new FileWriter(nomeArquivo + ".dic");
-			PrintWriter  gravarArquivo = new PrintWriter(arquivo);
-			
-			
-			//Codificação da imagem
-			for (int i = 0; i < saida.size(); i++) {
-				gravarArquivo.println(saida.get(i) );
-			}			
-			
-			gravarArquivo.flush();
-			gravarArquivo.close();
-			gravarArquivo.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}	
-	*/
-	//*******************************************************************************************
-	
+
 	public BufferedImage descompressaoLZW(String nomeArquivo){
 		ArrayList<String> dicionario = new ArrayList<String>();
 		ArrayList<String> saida = new ArrayList<String>();
@@ -829,20 +862,20 @@ public class ControlarImagem {
 		int cw, pw, i;
 		String p, c;
 		Integer[] dimensao = new Integer[2];
-		
+
 		//iniciar o dicionario
 		iniciarDicionario(dicionario); 
-		
+
 		//Abrir o arquivo
 		abrirArquivo(nomeArquivo, codigo, dimensao);
-		
+
 		cw = codigo.get(0);
 		saida.add(dicionario.get(cw) );
-		
+
 		for(i = 1; i < codigo.size(); i++){
 			pw = cw;
 			cw = codigo.get(i);
-						
+
 			if(dicionario.size() > cw){
 				saida.add(dicionario.get(cw) );
 				p = dicionario.get(pw);
@@ -855,52 +888,52 @@ public class ControlarImagem {
 				saida.add(concatena(p, c) );
 			}
 		}
-				
+
 		return transformarArray(saida, dimensao[1], dimensao[0]);
-				
+
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	private String primeiroCaracter(ArrayList<String> dicionario, int cw){
 		String strings[] = dicionario.get(cw).split(";");
-		 return strings[0] + ";";
+		return strings[0] + ";";
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	private String concatena(String p, String c){
 		String strings[] = c.split(";");
 		return p + strings[0] + ";";
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	private void abrirArquivo(String nomeArquivo, ArrayList<Integer> codigo, Integer[] dimensao){
 		try{
 			File arquivo = new File(nomeArquivo);
 			FileInputStream lerArquivo = new FileInputStream(arquivo);
 			DataInputStream dis = new DataInputStream(lerArquivo);
-			
+
 			dimensao[0] = dis.readInt();
 			dimensao[1] = dis.readInt();
-			
+
 			while( dis.available() > 0 ){
 				codigo.add( dis.readInt() );
 			}
-				
-			
+
+
 			dis.close();
 			lerArquivo.close();
-			
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	//*******************************************************************************************
-	
+
 	public BufferedImage transformarArray ( ArrayList<String> saida, int nLin, int nCol){
 		int x = 0, y = 0, i, j;
 		WritableRaster imagemRasterSaida;
@@ -911,24 +944,24 @@ public class ControlarImagem {
 
 		for ( i = 0; i < saida.size(); i++ ){
 			String cores[] = saida.get(i).split(";");
-			
+
 			for (j = 0; j < cores.length; j++) {
 				if(!cores[j].equals("")){
-										
+
 					imagemRasterSaida.setSample( x, y, 0, Integer.parseInt(cores[j]) );
-					
+
 					x++;
 					if(x == nCol){
 						x = 0;
 						y++;
 					}
-					
+
 				}
 			}
 		}
 		return ( imagemB );
 	}
-	
+
 	//*******************************************************************************************
-	
+
 }

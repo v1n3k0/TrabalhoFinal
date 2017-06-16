@@ -62,17 +62,18 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 				controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen );
 				estadoDesenho  = true;
 				imagemCinza    = controleImagem.getImagemCinza();
+				imagem = controleImagem.getImagem();
 				nLinImageInic  = controleImagem.getNLin();
 				nColImageInic  = controleImagem.getNCol();
 
 				pnCenario.mudarBotoes();
 				pnCenario.limpaPainelDir( desenhoDir );
-				controleImagem.mostrarImagemMatriz ( imagemCinza, nLinImageInic, nColImageInic, desenhoDir );
+				controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
 
 				nLinImageAtual = nLinImageInic;
 				nColImageAtual = nColImageInic;
 				imagemAtual    = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
-				imagem = controleImagem.getImagem();
+				
 			}
 		}
 
@@ -119,10 +120,10 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			nLinImageAtual   = nLinImageInic;
 			nColImageAtual   = nColImageInic;
 			imagemAtual      = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
-			imagem = controleImagem.getImagem();
+			imagem = controleImagem.copia(controleImagem.getImagem() );
 
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemMatriz ( imagemAtual, nLinImageAtual, nColImageAtual, desenhoDir );
+			controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
 
 			pnCenario.ativarPainelAcao1();
 			pnCenario.resetaSistema();
@@ -186,7 +187,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		x = (int) e.getX();
 		y = (int) e.getY();
 		
-		pnCenario.setAcao4(controleImagem.getCor(imagem, x, y) );
+		pnCenario.setAcao4(controleImagem.gerCores(imagem, x, y) );
 
 	}
 
@@ -229,12 +230,16 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	//*******************************************************************************************
 	private void filtroCanny()
 	{
+		BufferedImage imgAux = controleImagem.getImagem();
 		try {
 			controleImagem.filtroCanny(imagem, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
+			controleImagem.mesclarImagem(imgAux, imagem, 0);
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
+			controleImagem.mostrarImagemBuffer(imgAux, desenhoDir);
+			imagem = imgAux;
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Insira os parametros para filtro de canny", "Aviso", JOptionPane.WARNING_MESSAGE);
+			e.printStackTrace();
 		}
 
 	}

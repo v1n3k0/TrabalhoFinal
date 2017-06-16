@@ -2,6 +2,8 @@ package pacoteBase.VIEW;
 
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import pacoteBase.CONTROL.ControlarAplicativo;
 
@@ -44,6 +46,7 @@ public class MontarPainelInicial  {
 	private JLabel lbAcao41;
 	private JLabel lbAcao42;
 	private JLabel lbAcao43;
+	private JLabel lbAcao44;
 
 	private Graphics      desenhoCen;
 	private Graphics      desenhoDir;
@@ -193,20 +196,22 @@ public class MontarPainelInicial  {
 		// ADDING RADIO BUTTON PARA CONTROLE DO TIPO DA ACAO 4
 		controlePanelAcao4 = new JPanel();
 		controlePanelAcao4.setBackground( Color.lightGray );
-		controlePanelAcao4.setMaximumSize( new Dimension ( 130, 80 ) );
+		controlePanelAcao4.setMaximumSize( new Dimension ( 145, 80 ) );
 		outputPanelEsq.add( controlePanelAcao4 );
 
 		acao4Panel = new JPanel();
-		acao4Panel.setPreferredSize( new Dimension ( 120, 75 ) );
-		acao4Panel.setLayout(new GridLayout(3, 1));
+		acao4Panel.setPreferredSize( new Dimension ( 135, 75 ) );
+		acao4Panel.setLayout(new GridLayout(4, 1));
 		
 		lbAcao41 = new JLabel();
 		lbAcao42 = new JLabel();
 		lbAcao43 = new JLabel();
+		lbAcao44 = new JLabel();
 
 		acao4Panel.add( lbAcao41 );
 		acao4Panel.add( lbAcao42 );
 		acao4Panel.add( lbAcao43 );
+		acao4Panel.add( lbAcao44 );
 
 		acao4Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Cor"));
 
@@ -485,10 +490,11 @@ public class MontarPainelInicial  {
 
 	//******************************************************************************************
 	
-	public void setAcao4(int n){
-		lbAcao41.setText("R: " + n );
-		lbAcao42.setText("G: " + n );
-		lbAcao43.setText("B: " + n );
+	public void setAcao4(ArrayList<Integer> cores){
+		lbAcao41.setText("R: " + cores.get(0) );
+		lbAcao42.setText("G: " + cores.get(1) );
+		lbAcao43.setText("B: " + cores.get(2) );
+		lbAcao44.setText("Média: " + (cores.get(0) + cores.get(1) + cores.get(2) ) / 3 );
 	}
 	
 	//******************************************************************************************
