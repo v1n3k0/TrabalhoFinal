@@ -1,0 +1,10 @@
+Canny
+http://www2.ic.uff.br/~aconci/canny.pdf
+
+LZW
+http://www.cs.sfu.ca/CourseCentral/365/li/squeeze/LZW.html
+http://www.decom.fee.unicamp.br/dspcom/EE088/Algoritmo_LZW.pdf
+http://multimedia.ufp.pt/codecs/compressao-sem-perdas/codificacao-baseada-em-dicionarios/lzw/
+
+Suavização (Mediana)
+http://www2.ic.uff.br/~aconci/suavizacao.pdf
