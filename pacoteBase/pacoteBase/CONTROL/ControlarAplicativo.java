@@ -78,13 +78,19 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 				
 			}
 		}
+		
+		if ( comando.equals( "abrirlzw" ) ) {
+			descompressaoLZW();
+		}
 
 		if ( comando.equals( "botaoAcao3" ) ) {
-			filtroCanny();
+			filtroMediana();
+			filtroCannyMesclar();
 		}
 
 		if ( comando.equals( "botaoAcao1" ) )  {
 			filtroMediana();
+			filtroCanny();
 		}
 
 		if ( comando.equals( "botaoAcao4" ) ) {
@@ -118,10 +124,6 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		if ( comando.equals( "salvarlzw" ) ) {
 			compressaoLZW();
 		}
-		
-		if ( comando.equals( "abrirlzw" ) ) {
-			descompressaoLZW();
-		}
 
 		if ( comando.equals( "botaoSalva" ) && estadoDesenho ) {
 			nomeArquivo = pnCenario.escolherArquivo ( 2 );
@@ -129,13 +131,14 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		}
 
 		if ( comando.equals( "botaoReset" ) && estadoDesenho ) {
+			
 			pnCenario.limpaPainelCen( desenhoCen );
 			controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen );
 			nLinImageAtual   = nLinImageInic;
 			nColImageAtual   = nColImageInic;
 			imagemAtual      = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
+			
 			imagem = controleImagem.copia(controleImagem.getImagem() );
-
 			pnCenario.limpaPainelDir( desenhoDir );
 			controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
 
@@ -241,7 +244,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	}
 
 	//*******************************************************************************************
-	private void filtroCanny()
+	private void filtroCannyMesclar()
 	{
 		BufferedImage imgAux = controleImagem.getImagem();
 		try {
@@ -250,6 +253,20 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			pnCenario.limpaPainelDir( desenhoDir );
 			controleImagem.mostrarImagemBuffer(imgAux, desenhoDir);
 			imagem = imgAux;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Insira os parametros para filtro de canny", "Aviso", JOptionPane.WARNING_MESSAGE);
+			e.printStackTrace();
+		}
+
+	}
+	
+	//*******************************************************************************************
+	private void filtroCanny()
+	{
+		try {
+			controleImagem.filtroCanny(imagem, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
+			pnCenario.limpaPainelDir( desenhoDir );
+			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Insira os parametros para filtro de canny", "Aviso", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
@@ -276,18 +293,19 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	private void compressaoLZW(){
 		String nomeArquivo = pnCenario.escolherArquivo ( 2 );
 		controleImagem.compressaoLZW(nomeArquivo, imagem);
+		JOptionPane.showMessageDialog(null, "Concluído a compactação LZW", "Concluído", JOptionPane.DEFAULT_OPTION);
 	}
 	
 	//*******************************************************************************************
 	
 	private void descompressaoLZW(){
-		BufferedImage img;
 		String nomeArquivo = pnCenario.escolherArquivo ( 1 );
 		
 		if ( nomeArquivo != null ) {
-			img = controleImagem.descompressaoLZW(nomeArquivo);
+			imagem = controleImagem.descompressaoLZW(nomeArquivo);
+			
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(img, desenhoDir);
+			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
 		}
 	}
 

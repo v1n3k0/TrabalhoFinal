@@ -109,15 +109,15 @@ public class MontarPainelInicial  {
 		titlePanel.add(titulo);
 
 		// ADDING BUTTONS
-		addAButton ( "New Image", "botaoImagem", buttonPanel, true, controlePrograma );
-		btReset = addAButton ( "Reset", "botaoReset", buttonPanel, false, controlePrograma );
-		btAcao1 = addAButton ( "Filtro Mediana", "botaoAcao1", buttonPanel, false, controlePrograma );
-		btAcao3 = addAButton ( "Filtro Canny", "botaoAcao3", buttonPanel, false, controlePrograma );
-		btAcao4 = addAButton ( "Ruído Sal e Pimenta", "botaoAcao4", buttonPanel, false, controlePrograma );
-		btSalva = addAButton ( "Save", "botaoSalva", buttonPanel, false, controlePrograma );
-		btAbrirLzw = addAButton ( "Abrir LZW", "abrirlzw", buttonPanel, false, controlePrograma );
-		btSalvarLzw = addAButton ( "Salvar LZW", "salvarlzw", buttonPanel, false, controlePrograma );
-		addAButton ( "END", "botaoFim", buttonPanel, true, controlePrograma );
+		addAButton ( "New Image", "botaoImagem", buttonPanel, true, Color.white, controlePrograma );
+		btAbrirLzw = addAButton ( "Abrir LZW", "abrirlzw", buttonPanel, false, Color.white, controlePrograma );
+		btReset = addAButton ( "Reset", "botaoReset", buttonPanel, false, new Color(50, 150, 255), controlePrograma );
+		btAcao1 = addAButton ( "Destacar", "botaoAcao1", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
+		btAcao3 = addAButton ( "Salientar", "botaoAcao3", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
+		btAcao4 = addAButton ( "Ruído Sal e Pimenta", "botaoAcao4", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
+		btSalva = addAButton ( "Salvar", "botaoSalva", buttonPanel, false, new Color(50, 255, 150), controlePrograma );
+		btSalvarLzw = addAButton ( "Salvar LZW", "salvarlzw", buttonPanel, false, new Color(50, 255, 150), controlePrograma );
+		addAButton ( "END", "botaoFim", buttonPanel, true, new Color(255, 50, 50), controlePrograma );
 
 		// ADDING RADIO BUTTON PARA CONTROLE DA ACAO3
 		controlePanelAcao3 = new JPanel();
@@ -292,6 +292,7 @@ public class MontarPainelInicial  {
 			String              textoControle,
 			Container           container,
 			boolean             estado,
+			Color				cor,
 			ControlarAplicativo controlePrograma
 			) 
 	{
@@ -300,6 +301,8 @@ public class MontarPainelInicial  {
 		botao = new JButton( textoBotao );
 		botao.setAlignmentX(Component.CENTER_ALIGNMENT);
 		container.add(botao);
+		
+		botao.setBackground(cor);
 
 		botao.setEnabled(estado);
 
