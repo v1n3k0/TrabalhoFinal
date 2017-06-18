@@ -38,7 +38,7 @@ public class ControlarImagem {
 			criarImagemCinza ( imagemDada );
 		}
 	}
-
+	
 	//*******************************************************************************************
 	// METODO PARA GERAR A IMAGEM RASTER EM NIVEIS DE CINZA A PARTIR DA IMAGEM BUFERIZADA COLORIDA
 
@@ -929,7 +929,6 @@ public class ControlarImagem {
 			while( dis.available() > 0 ){
 				codigo.add( dis.readInt() );
 			}
-
 
 			dis.close();
 			lerArquivo.close();

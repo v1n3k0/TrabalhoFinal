@@ -114,7 +114,7 @@ public class MontarPainelInicial  {
 		btReset = addAButton ( "Reset", "botaoReset", buttonPanel, false, new Color(50, 150, 255), controlePrograma );
 		btAcao1 = addAButton ( "Destacar", "botaoAcao1", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
 		btAcao3 = addAButton ( "Salientar", "botaoAcao3", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
-		btAcao4 = addAButton ( "Ruído Sal e Pimenta", "botaoAcao4", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
+		//btAcao4 = addAButton ( "Ruído Sal e Pimenta", "botaoAcao4", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
 		btSalva = addAButton ( "Salvar", "botaoSalva", buttonPanel, false, new Color(50, 255, 150), controlePrograma );
 		btSalvarLzw = addAButton ( "Salvar LZW", "salvarlzw", buttonPanel, false, new Color(50, 255, 150), controlePrograma );
 		addAButton ( "END", "botaoFim", buttonPanel, true, new Color(255, 50, 50), controlePrograma );
@@ -175,7 +175,8 @@ public class MontarPainelInicial  {
 
 		controlePanelAcao1.add(acao1Panel);
 		controlePanelAcao1.setVisible(false);
-
+		
+		
 		// ADDING RADIO BUTTON PARA CONTROLE DA ACAO 2
 		controlePanelAcao2 = new JPanel();
 		controlePanelAcao2.setBackground( Color.lightGray );
@@ -349,10 +350,10 @@ public class MontarPainelInicial  {
 		btAbrirLzw.setEnabled(true);
 		btSalvarLzw.setEnabled(true);
 		btReset.setEnabled(true);
-		btAcao4.setEnabled(true);
+		//btAcao4.setEnabled(true);
 		controlePanelAcao3.setVisible(true);
 		controlePanelAcao1.setVisible(true);
-		controlePanelAcao2.setVisible(true);
+		//controlePanelAcao2.setVisible(true);
 		controlePanelAcao5.setVisible(true);
 		controlePanelAcao4.setVisible(true);
 	}
@@ -465,7 +466,7 @@ public class MontarPainelInicial  {
 	}
 
 	//******************************************************************************************
-
+	
 	public int getText21(){
 		return Integer.parseInt(txt21.getText().trim() ) ;
 	}
@@ -475,7 +476,7 @@ public class MontarPainelInicial  {
 	public int getText22(){
 		return Integer.parseInt(txt22.getText().trim() ) ;
 	}
-
+	
 	//******************************************************************************************
 
 	public int getText31(){
