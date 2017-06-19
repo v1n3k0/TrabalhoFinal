@@ -16,20 +16,21 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	private String              nomeArquivoImagemDada;
 	private char[][]            imagemCinza;
 	private char[][]            imagemAtual;
-	BufferedImage 				imagem;
+	BufferedImage 				imgCen;
+	BufferedImage 				imgDir;
 
 	private int                 nLinImageAtual, nColImageAtual;
 	private int                 nLinImageInic, nColImageInic;
 	private int					nDimensaoFiltro;
 	private int					corBorda;
-	private boolean             estadoDesenho;
+	private byte             estadoDesenho;
 
 	//*******************************************************************************************
 	public ControlarAplicativo( )
 	{
 		pnCenario = new MontarPainelInicial( this );
 		pnCenario.showPanel();
-		estadoDesenho  = false;
+		estadoDesenho  = 0;
 		nDimensaoFiltro = 3;
 		corBorda = 0;
 	}
@@ -44,7 +45,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		comando = e.getActionCommand();
 
 		// DEFINE AMBIENTE GRAFICO
-		if ( !estadoDesenho ) {
+		if ( estadoDesenho == 0 ) {
 			pnCenario.iniciarGraphics();
 			desenhoCen = pnCenario.getDesenhoC();
 			desenhoDir = pnCenario.getDesenhoD();
@@ -62,15 +63,15 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			nomeArquivoImagemDada = pnCenario.escolherArquivo ( 1 );
 			if ( nomeArquivoImagemDada != null ) {
 				controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen );
-				estadoDesenho  = true;
+				estadoDesenho  = 1;
 				imagemCinza    = controleImagem.getImagemCinza();
-				imagem = controleImagem.getImagem();
+				imgCen = controleImagem.copia(controleImagem.getImagem() );
 				nLinImageInic  = controleImagem.getNLin();
 				nColImageInic  = controleImagem.getNCol();
 
 				pnCenario.mudarBotoes();
 				pnCenario.limpaPainelDir( desenhoDir );
-				controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
+				controleImagem.mostrarImagemBuffer ( imgCen, desenhoDir );
 
 				nLinImageAtual = nLinImageInic;
 				nColImageAtual = nColImageInic;
@@ -125,24 +126,42 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			compressaoLZW();
 		}
 
-		if ( comando.equals( "botaoSalva" ) && estadoDesenho ) {
+		if ( comando.equals( "botaoSalva" ) && estadoDesenho == 1 ) {
 			nomeArquivo = pnCenario.escolherArquivo ( 2 );
 			controleImagem.gravarImagem( nomeArquivo, imagemAtual, nLinImageAtual, nColImageAtual );
 		}
 
-		if ( comando.equals( "botaoReset" ) && estadoDesenho ) {
+		if ( comando.equals( "botaoReset" ) ) {
 			
-			pnCenario.limpaPainelCen( desenhoCen );
-			controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen);
-			nLinImageAtual   = nLinImageInic;
-			nColImageAtual   = nColImageInic;
-			imagemAtual      = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
-			
-			imagem = controleImagem.copia(controleImagem.getImagem() );
-			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer ( imagem, desenhoDir );
+			if (estadoDesenho == 1) {
+				
+				pnCenario.limpaPainelCen( desenhoCen );
+				controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen);
+				nLinImageAtual   = nLinImageInic;
+				nColImageAtual   = nColImageInic;
+				imagemAtual      = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
+				
+				imgCen = controleImagem.copia(controleImagem.getImagem() );
+				pnCenario.limpaPainelDir( desenhoDir );
+				controleImagem.mostrarImagemBuffer ( imgCen, desenhoDir );
 
-			pnCenario.ativarPainelAcao1();
+				pnCenario.ativarPainelAcao1();
+				
+			}else if(estadoDesenho == 2){
+				
+				pnCenario.limpaPainelCen( desenhoCen );
+				controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen, desenhoDir);
+				nLinImageAtual   = nLinImageInic;
+				nColImageAtual   = nColImageInic;
+				imagemAtual      = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
+				
+				imgCen = controleImagem.copia(controleImagem.getImagem() );
+
+				pnCenario.ativarPainelAcao1();
+				
+			}
+			
+			
 		}
 	}
 
@@ -203,7 +222,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		x = (int) e.getX();
 		y = (int) e.getY();
 		
-		pnCenario.setAcao4(controleImagem.gerCores(imagem, x, y) );
+		pnCenario.setAcao4(controleImagem.gerCores(imgDir, x, y) );
 
 	}
 
@@ -227,17 +246,13 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		try{
 			int tamFiltro = pnCenario.getText31();
 			if(tamFiltro % 2 == 1){
-				imagem = controleImagem.mediana(imagem, tamFiltro);
-				pnCenario.limpaPainelDir( desenhoDir );
-				controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
+				imgDir = controleImagem.mediana(imgCen, tamFiltro);
 			}else{
 				JOptionPane.showMessageDialog(null, "Filtro somente com tamanhos impares.", "Aviso", JOptionPane.WARNING_MESSAGE);
 			}
 
 		}catch(NumberFormatException e){
-			imagem = controleImagem.mediana(imagem, nDimensaoFiltro);
-			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
+			imgDir = controleImagem.mediana(imgCen, nDimensaoFiltro);
 		}
 
 
@@ -246,13 +261,12 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	//*******************************************************************************************
 	private void filtroCannyMesclar()
 	{
-		BufferedImage imgAux = controleImagem.copia(controleImagem.getImagem() );
 		try {
-			controleImagem.filtroCanny(imagem, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
-			controleImagem.mesclarImagem(imgAux, imagem, corBorda);
+			controleImagem.filtroCanny(imgDir, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
+			controleImagem.mesclarImagem(imgCen, imgDir, corBorda);
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imgAux, desenhoDir);
-			imagem = controleImagem.getImagem();
+			controleImagem.mostrarImagemBuffer(imgCen, desenhoDir);
+			imgCen = controleImagem.copia(controleImagem.getImagem() );
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Insira os parametros para filtro de canny", "Aviso", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
@@ -264,10 +278,10 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	private void filtroCanny()
 	{
 		try {
-			controleImagem.filtroCanny(imagem, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
+			controleImagem.filtroCanny(imgDir, pnCenario.getText11(), pnCenario.getText13(), pnCenario.getText12() );
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
-			imagem = controleImagem.getImagem();
+			controleImagem.mostrarImagemBuffer(imgDir, desenhoDir);
+			imgCen = controleImagem.copia(controleImagem.getImagem() );
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Insira os parametros para filtro de canny", "Aviso", JOptionPane.WARNING_MESSAGE);
 			e.printStackTrace();
@@ -279,10 +293,10 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	private void ruidoSalPimenta()
 	{
 		try {
-			controleImagem.ruido(imagem, 255, 255, 255, pnCenario.getText21() );
-			controleImagem.ruido(imagem, 0, 0, 0, pnCenario.getText22() );
+			controleImagem.ruido(imgDir, 255, 255, 255, pnCenario.getText21() );
+			controleImagem.ruido(imgDir, 0, 0, 0, pnCenario.getText22() );
 			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
+			controleImagem.mostrarImagemBuffer(imgDir, desenhoDir);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Insira os parametros para Ruido Sal e Pimenta", "Aviso", JOptionPane.WARNING_MESSAGE);
 		}
@@ -305,17 +319,22 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 	//*******************************************************************************************
 	
 	private void descompressaoLZW(){
-		
-		String nomeArquivo = pnCenario.escolherArquivo ( 1 );
-		
-		if ( nomeArquivo != null ) {
-			imagem = controleImagem.descompressaoLZW(nomeArquivo);
-			controleImagem.setImagem(imagem);
-			
-			pnCenario.limpaPainelDir( desenhoDir );
-			controleImagem.mostrarImagemBuffer(imagem, desenhoDir);
-		}else{
-			JOptionPane.showMessageDialog(null, "Escolha arquivos com extensão .lzw", "Aviso", JOptionPane.WARNING_MESSAGE);
+		// LE IMAGEM SOLICITADA
+		nomeArquivoImagemDada = pnCenario.escolherArquivo ( 1 );
+		if ( nomeArquivoImagemDada != null ) {
+			controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen, desenhoDir );
+			estadoDesenho  = 2;
+			imagemCinza    = controleImagem.getImagemCinza();
+			imgCen = controleImagem.copia(controleImagem.getImagem() );
+			nLinImageInic  = controleImagem.getNLin();
+			nColImageInic  = controleImagem.getNCol();
+
+			pnCenario.mudarBotoes();
+
+			nLinImageAtual = nLinImageInic;
+			nColImageAtual = nColImageInic;
+			imagemAtual    = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
+
 		}
 		
 	}

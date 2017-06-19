@@ -40,6 +40,20 @@ public class ControlarImagem {
 	}
 	
 	//*******************************************************************************************
+	public ControlarImagem( String   nomeArquivoImagemDada,
+			Graphics desenhoCen, 
+			Graphics desenhoDir
+			)
+	{
+		imagemDada = descompressaoLZW( nomeArquivoImagemDada );
+		if ( imagemDada != null ) {
+			mostrarImagemBuffer ( imagemDada, desenhoCen );
+			mostrarImagemBuffer ( imagemDada, desenhoDir );
+			criarImagemCinza ( imagemDada );
+		}
+	}
+	
+	//*******************************************************************************************
 	// METODO PARA GERAR A IMAGEM RASTER EM NIVEIS DE CINZA A PARTIR DA IMAGEM BUFERIZADA COLORIDA
 
 	private void criarImagemCinza ( BufferedImage imagem ) 
@@ -946,7 +960,7 @@ public class ControlarImagem {
 		WritableRaster imagemRasterSaida;
 		BufferedImage  imagemB;
 
-		imagemB           = new BufferedImage( nCol, nLin, BufferedImage.TYPE_BYTE_GRAY ); 
+		imagemB           = new BufferedImage( nCol, nLin, BufferedImage.TYPE_3BYTE_BGR ); 
 		imagemRasterSaida = imagemB.getRaster();
 
 		for ( i = 0; i < saida.size(); i++ ){
@@ -956,6 +970,8 @@ public class ControlarImagem {
 				if(!cores[j].equals("")){
 
 					imagemRasterSaida.setSample( x, y, 0, Integer.parseInt(cores[j]) );
+					imagemRasterSaida.setSample( x, y, 1, Integer.parseInt(cores[j]) );
+					imagemRasterSaida.setSample( x, y, 2, Integer.parseInt(cores[j]) );
 
 					x++;
 					if(x == nCol){

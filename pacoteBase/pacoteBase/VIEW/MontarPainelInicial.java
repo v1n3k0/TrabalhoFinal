@@ -22,9 +22,8 @@ public class MontarPainelInicial  {
 	private JButton  btAcao1;
 	private JButton  btSalva;
 	private JButton  btReset;
-	private JButton  btAcao4;
+	//private JButton  btAcao4;
 	private JButton  btSalvarLzw;
-	private JButton  btAbrirLzw;
 
 	private JRadioButton	btAcao31; 
 	private JRadioButton 	btAcao32;
@@ -110,7 +109,7 @@ public class MontarPainelInicial  {
 
 		// ADDING BUTTONS
 		addAButton ( "New Image", "botaoImagem", buttonPanel, true, Color.white, controlePrograma );
-		btAbrirLzw = addAButton ( "Abrir LZW", "abrirlzw", buttonPanel, false, Color.white, controlePrograma );
+		addAButton ( "Abrir LZW", "abrirlzw", buttonPanel, true, Color.white, controlePrograma );
 		btReset = addAButton ( "Reset", "botaoReset", buttonPanel, false, new Color(50, 150, 255), controlePrograma );
 		btAcao1 = addAButton ( "Destacar", "botaoAcao1", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
 		btAcao3 = addAButton ( "Salientar", "botaoAcao3", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
@@ -347,7 +346,7 @@ public class MontarPainelInicial  {
 		btAcao3.setEnabled(true);
 		btAcao1.setEnabled(true);
 		btSalva.setEnabled(true);
-		btAbrirLzw.setEnabled(true);
+		//btAbrirLzw.setEnabled(true);
 		btSalvarLzw.setEnabled(true);
 		btReset.setEnabled(true);
 		//btAcao4.setEnabled(true);
