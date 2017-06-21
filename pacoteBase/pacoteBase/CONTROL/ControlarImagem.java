@@ -249,9 +249,22 @@ public class ControlarImagem {
 	//*******************************************************************************************
 	
 	public BufferedImage copia(BufferedImage original){
-		ColorModel model = original.getColorModel();
-		WritableRaster raster = original.copyData(null);
-		BufferedImage alterada = new BufferedImage(model, raster, model.isAlphaPremultiplied(), null);
+		int nCol = original.getWidth();
+		int nLin = original.getHeight();
+		int x, y, cor;
+		
+		BufferedImage alterada = new BufferedImage(nCol, nLin, BufferedImage.TYPE_3BYTE_BGR);
+		WritableRaster rasterAlt = alterada.getRaster();
+		WritableRaster rasterOrg = original.getRaster();
+		
+		for(y = 0; y < nLin; y++){
+			for(x = 0; x < nCol; x++){
+				cor = getCor(rasterOrg, x, y);
+				rasterAlt.setSample(x, y, 0, cor);
+				rasterAlt.setSample(x, y, 1, cor);
+				rasterAlt.setSample(x, y, 2, cor);
+			}
+		}
 		
 		return alterada;
 	}

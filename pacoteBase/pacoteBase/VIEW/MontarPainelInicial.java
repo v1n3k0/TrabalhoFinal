@@ -108,7 +108,7 @@ public class MontarPainelInicial  {
 		titlePanel.add(titulo);
 
 		// ADDING BUTTONS
-		addAButton ( "New Image", "botaoImagem", buttonPanel, true, Color.white, controlePrograma );
+		addAButton ( "Abrir Imagem", "botaoImagem", buttonPanel, true, Color.white, controlePrograma );
 		addAButton ( "Abrir LZW", "abrirlzw", buttonPanel, true, Color.white, controlePrograma );
 		btReset = addAButton ( "Reset", "botaoReset", buttonPanel, false, new Color(50, 150, 255), controlePrograma );
 		btAcao1 = addAButton ( "Destacar", "botaoAcao1", buttonPanel, false, new Color(255, 255, 50), controlePrograma );
@@ -230,8 +230,8 @@ public class MontarPainelInicial  {
 		controlePanelAcao5.add(acao5Panel);
 		controlePanelAcao5.setVisible(false);
 
-		outputPanelDir.addMouseListener(controlePrograma);
-		outputPanelDir.addMouseListener(controlePrograma);
+		outputPanelCen.addMouseListener(controlePrograma);
+		outputPanelCen.addMouseListener(controlePrograma);
 
 		// ADDING RADIO BUTTON PARA CONTROLE DO TIPO DA ACAO 4
 		controlePanelAcao4 = new JPanel();

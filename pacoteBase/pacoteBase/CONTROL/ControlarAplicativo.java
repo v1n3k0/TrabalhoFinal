@@ -126,7 +126,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			compressaoLZW();
 		}
 
-		if ( comando.equals( "botaoSalva" ) && estadoDesenho == 1 ) {
+		if ( comando.equals( "botaoSalva" ) && estadoDesenho > 0 ) {
 			nomeArquivo = pnCenario.escolherArquivo ( 2 );
 			controleImagem.gravarImagem( nomeArquivo, imagemAtual, nLinImageAtual, nColImageAtual );
 		}
@@ -222,7 +222,7 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 		x = (int) e.getX();
 		y = (int) e.getY();
 		
-		pnCenario.setAcao4(controleImagem.gerCores(imgDir, x, y) );
+		pnCenario.setAcao4(controleImagem.gerCores(imgCen, x, y) );
 
 	}
 
@@ -336,6 +336,28 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			imagemAtual    = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
 
 		}
+		
+		/*		 
+			// LE IMAGEM SOLICITADA
+			nomeArquivoImagemDada = pnCenario.escolherArquivo ( 1 );
+			if ( nomeArquivoImagemDada != null ) {
+				controleImagem = new ControlarImagem( nomeArquivoImagemDada, desenhoCen );
+				estadoDesenho  = 1;
+				imagemCinza    = controleImagem.getImagemCinza();
+				imgCen = controleImagem.copia(controleImagem.getImagem() );
+				nLinImageInic  = controleImagem.getNLin();
+				nColImageInic  = controleImagem.getNCol();
+
+				pnCenario.mudarBotoes();
+				pnCenario.limpaPainelDir( desenhoDir );
+				controleImagem.mostrarImagemBuffer ( imgCen, desenhoDir );
+
+				nLinImageAtual = nLinImageInic;
+				nColImageAtual = nColImageInic;
+				imagemAtual    = controleImagem.copiarImagem ( imagemCinza, nLinImageInic, nColImageInic );
+				
+			}
+		 */
 		
 	}
 
