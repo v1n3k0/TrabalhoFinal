@@ -84,12 +84,12 @@ public class ControlarAplicativo implements MouseListener, MouseMotionListener, 
 			descompressaoLZW();
 		}
 
-		if ( comando.equals( "botaoAcao3" ) ) {
+		if ( comando.equals( "botaoAcao1" ) ) {
 			filtroMediana();
 			filtroCannyMesclar();
 		}
 
-		if ( comando.equals( "botaoAcao1" ) )  {
+		if ( comando.equals( "botaoAcao3" ) )  {
 			filtroMediana();
 			filtroCanny();
 		}
